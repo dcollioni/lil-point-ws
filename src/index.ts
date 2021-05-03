@@ -4,5 +4,5 @@ import { start as startWebSocket } from './ws/webSocket'
 
 const matches: Match[] = []
 
-startApi(matches)
-startWebSocket(matches)
+const wss = startWebSocket(matches)
+startApi(matches, wss)

@@ -4,7 +4,7 @@ import { Match } from './../models/Match'
 import { ConnectedPayload, OutMessage, OutMessageType } from './OutMessage'
 import Player from '../models/Player'
 
-export const start = (matches: Match[]): void => {
+export const start = (matches: Match[]): WebSocket.Server => {
   const port = 8080
   const wss = new WebSocket.Server({ port }, () => {
     console.log(`web socket running: http://localhost:${port}/`)
@@ -86,4 +86,6 @@ export const start = (matches: Match[]): void => {
 
     ws.send(JSON.stringify(messageObject))
   }
+
+  return wss
 }

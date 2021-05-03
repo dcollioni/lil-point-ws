@@ -2,12 +2,13 @@ import { IMatch } from '../models/Match'
 
 export enum OutMessageType {
   playerConnected = 'PLAYER_CONNECTED',
-  // matchCreated = 'MATCH_CREATED',
+  matchStarted = 'MATCH_STARTED',
+  cardBought = 'CARD_BOUGHT',
+  cardDiscarded = 'CARD_DISCARDED',
 }
 
 export interface OutMessagePayload {
   matchId: string
-  playerId: string
 }
 
 export interface OutMessage {
@@ -27,12 +28,32 @@ export class ConnectedPayload implements OutMessagePayload {
   }
 }
 
-// export class MatchCreatedPayload implements OutMessagePayload {
-//   userId: string
-//   match: IMatch
+export class MatchStartedPayload implements OutMessagePayload {
+  matchId: string
+  match: IMatch
 
-//   constructor(userId: string, match: IMatch) {
-//     this.userId = userId
-//     this.match = match
-//   }
-// }
+  constructor(matchId: string, match: IMatch) {
+    this.matchId = matchId
+    this.match = match
+  }
+}
+
+export class CardBoughtPayload implements OutMessagePayload {
+  matchId: string
+  match: IMatch
+
+  constructor(matchId: string, match: IMatch) {
+    this.matchId = matchId
+    this.match = match
+  }
+}
+
+export class CardDiscardedPayload implements OutMessagePayload {
+  matchId: string
+  match: IMatch
+
+  constructor(matchId: string, match: IMatch) {
+    this.matchId = matchId
+    this.match = match
+  }
+}
