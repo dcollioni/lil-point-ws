@@ -34,12 +34,7 @@ export class Match implements IMatch {
     this.rounds = []
   }
 
-  // public get currentRound(): MatchRound {
-  //   return this.rounds[this.rounds.length - 1]
-  // }
-
-  addPlayer(name: string): Player {
-    const player = new Player(name)
+  addPlayer(player: Player): Player {
     this.players.push(player)
     return player
   }

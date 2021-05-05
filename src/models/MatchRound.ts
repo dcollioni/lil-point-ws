@@ -103,54 +103,55 @@ export class MatchRound implements IMatchRound {
     return false
   }
 
-  playerDropGame(): void {
-    const {
-      turn: { player },
-      table,
-    } = this
+  playerDropGame(cards: Card[]): Game {
+    // const {
+    //   turn: { player },
+    //   table,
+    // } = this
 
-    if (!this.turn.canDrop) {
-      return
-    }
+    // if (!this.turn.canDrop) {
+    //   return
+    // }
 
-    const { selectedCards: tableSelectedCards } = table
-    const { selectedCards } = player
-    const game = new Game([...selectedCards, ...tableSelectedCards])
+    // const { selectedCards: tableSelectedCards } = table
+    // const { selectedCards } = player
+    const game = new Game(cards)
 
     if (!game.isValid()) {
       return
     }
 
-    this.turn.canDiscard = true
-
-    table.games.push(game)
-    table.discarded = table.discarded.filter(card => !table.selectedCards.includes(card))
-    table.selectedCards = []
-
-    player.cards = player.cards.filter(card => !player.selectedCards.includes(card))
-    player.selectedCards = []
-    this.checkTurnResult()
-  }
-
-  playerDropCard = (cardsIds: string[], gameId: string): void => {
+    const cardsIds = cards.map(card => card.id)
     const { turn, table } = this
 
-    if (!turn.canDrop) {
-      return
-    }
+    turn.canDiscard = true
 
-    const { player } = turn
+    table.games.push(game)
+    table.discarded = table.discarded.filter(card => !cardsIds.includes(card.id))
+    // this.table.selectedCards = []
+
+    turn.player.cards = turn.player.cards.filter(card => !cardsIds.includes(card.id))
+    // this.turn.player.selectedCards = []
+    this.checkTurnResult()
+
+    return game
+  }
+
+  playerDropCards = (cards: Card[], gameId: string): Card[] => {
+    const { turn, table } = this
     const game = table.games.find(g => g.id === gameId)
-    const cards = player.cards.filter(c => cardsIds.includes(c.id))
 
     if (game && cards.length > 0) {
       const newGame = new Game([...game.cards, ...cards])
 
       if (newGame.isValid()) {
         game.cards = newGame.cards
-        player.cards = player.cards.filter(c => !cardsIds.includes(c.id))
-        player.selectedCards = []
+
+        const cardsIds = cards.map(card => card.id)
+        turn.player.cards = turn.player.cards.filter(c => !cardsIds.includes(c.id))
+        // player.selectedCards = []
         this.checkTurnResult()
+        return cards
       }
     }
   }

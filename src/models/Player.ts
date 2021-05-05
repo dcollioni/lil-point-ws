@@ -8,8 +8,8 @@ class Player {
   selectedCards: Card[]
   score: number
 
-  constructor(name: string) {
-    this.id = uuidv4()
+  constructor(id = uuidv4(), name: string) {
+    this.id = id
     this.name = name
     this.cards = []
     this.selectedCards = []
