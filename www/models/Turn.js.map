@@ -1,0 +1,1 @@
+{"version":3,"file":"Turn.js","sourceRoot":"","sources":["../../src/models/Turn.ts"],"names":[],"mappings":";;AAEA,MAAM,IAAI;IAMR,YAAY,MAAc;QACxB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAA;QACpB,IAAI,CAAC,MAAM,GAAG,IAAI,CAAA;QAClB,IAAI,CAAC,OAAO,GAAG,KAAK,CAAA;QACpB,IAAI,CAAC,UAAU,GAAG,KAAK,CAAA;IACzB,CAAC;CACF;AAED,kBAAe,IAAI,CAAA"}
