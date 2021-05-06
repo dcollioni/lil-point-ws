@@ -18,7 +18,7 @@ export interface IMatch {
 }
 
 export class Match implements IMatch {
-  private cardsPerPlayer = 3
+  private cardsPerPlayer = 11
   id: string
   status: MatchStatus
   numberOfPlayers: number
