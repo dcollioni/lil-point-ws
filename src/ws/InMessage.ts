@@ -9,6 +9,7 @@ export enum InMessageType {
   discardCard = 'DISCARD_CARD',
   dropGame = 'DROP_GAME',
   dropCards = 'DROP_CARDS',
+  nextRound = 'NEXT_ROUND',
 }
 
 export interface InMessagePayload {
@@ -69,4 +70,9 @@ export class DropCardsPayload implements InMessagePayload {
   playerId: string
   gameId: string
   cards: Card[]
+}
+
+export class NextRoundPayload implements InMessagePayload {
+  at: Date
+  matchId: string
 }

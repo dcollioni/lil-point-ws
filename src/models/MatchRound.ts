@@ -124,6 +124,8 @@ export class MatchRound implements IMatchRound {
     const cardsIds = cards.map(card => card.id)
     const { turn, table } = this
 
+    turn.canBuy = false
+    turn.canDrop = true
     turn.canDiscard = true
 
     table.games.push(game)

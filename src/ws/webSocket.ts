@@ -10,6 +10,7 @@ import {
   // InMessagePayload,
   InMessageType,
   JoinMatchPayload,
+  NextRoundPayload,
   StartMatchPayload,
 } from './InMessage'
 import { Match } from './../models/Match'
@@ -95,13 +96,9 @@ export const start = (matches: Match[]): WebSocket.Server => {
         case InMessageType.dropCards:
           dropCards(inMessage.payload as DropCardsPayload)
           break
-        // case InMessageType.connect:
-        //   outMessage = {
-        //     type: OutMessageType.playerConnected,
-        //     payload: connected(inMessage.payload as ConnectPayload, match),
-        //   }
-        //   sendToAll(outMessage, ws.protocol)
-        //   break
+        case InMessageType.nextRound:
+          nextRound(inMessage.payload as NextRoundPayload)
+          break
       }
     })
   })
@@ -208,9 +205,24 @@ export const start = (matches: Match[]): WebSocket.Server => {
     const turn = match.currentRound.turn
     const turnPlayer = match.currentRound.turn.player
 
-    if (!turn.canDrop || turnPlayer.id !== payload.playerId) {
-      console.log('Player cannot drop game', payload.playerId)
+    if (turnPlayer.id !== payload.playerId) {
+      console.log('Player cannot drop game 1', payload.playerId)
       return
+    }
+
+    if (!turn.canDrop) {
+      const lastDiscarded = match.currentRound.table.discarded[match.currentRound.table.discarded.length - 1]
+      console.log(lastDiscarded)
+      if (!lastDiscarded) {
+        console.log('Player cannot drop game 2', payload.playerId)
+        return
+      }
+
+      const cardsIds = payload.cards.map(card => card.id)
+      if (!cardsIds.includes(lastDiscarded.id) || !turn.canBuy) {
+        console.log('Player cannot drop game 3', payload.playerId)
+        return
+      }
     }
 
     const game = match.currentRound.playerDropGame(payload.cards)
@@ -257,6 +269,31 @@ export const start = (matches: Match[]): WebSocket.Server => {
       payload: new CardsDroppedPayload(cards),
     }
     sendToAll(cardsDroppedMessage, turnPlayer.id)
+  }
+
+  const nextRound = async (payload: NextRoundPayload): Promise<void> => {
+    const match = getMatch(payload.matchId)
+
+    if (!match.currentRound.hasEnded) {
+      console.log('Cannot start next round')
+      return
+    }
+
+    const round = await match.nextRound()
+
+    const matchUpdatedMessage = {
+      type: OutMessageType.matchUpdated,
+      payload: new MatchUpdatedPayload(match),
+    }
+    sendToAll(matchUpdatedMessage, match.id)
+
+    round.players.forEach(player => {
+      const playerUpdatedMessage = {
+        type: OutMessageType.playerUpdated,
+        payload: new PlayerUpdatedPayload(player),
+      }
+      sendToAll(playerUpdatedMessage, player.id)
+    })
   }
 
   const matchUpdated = (matchId: string): OutMessage => {
