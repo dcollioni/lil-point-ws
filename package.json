@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "main": "jest.config.js",
   "scripts": {
-    "prestart": "npm run tsc && cd www",
-    "start": "node index.js",
+    "prestart": "npx tsc",
+    "start": "node ./www/index.js",
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
     "test": "jest --testTimeout=30000",
