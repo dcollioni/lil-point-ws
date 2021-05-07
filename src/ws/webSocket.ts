@@ -29,11 +29,29 @@ import {
 } from './OutMessage'
 import Player from '../models/Player'
 
+import http from 'http'
+import express from 'express'
+import cors from 'cors'
+
 export const start = (matches: Match[]): WebSocket.Server => {
+  const app = express()
+  app.use(cors({ credentials: true, origin: '*' }))
+
+  app.get('/', (_req, res) => {
+    res.sendStatus(200)
+  })
+
   const port = parseInt(process.env.PORT || '8080')
-  const wss = new WebSocket.Server({ port }, () => {
+  const server = http.createServer(app)
+  server.listen(port, () => {
     console.log(`web socket running: http://localhost:${port}/`)
   })
+
+  // const port = parseInt(process.env.PORT || '8080')
+  const wss = new WebSocket.Server({ server })
+  // , () => {
+  //   console.log(`web socket running: http://localhost:${port}/`)
+  // })
 
   wss.on('connection', (ws: WebSocket) => {
     if (!ws.protocol) {
